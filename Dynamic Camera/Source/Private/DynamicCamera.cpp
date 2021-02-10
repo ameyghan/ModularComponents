@@ -64,11 +64,7 @@ void ADynamicCamera::EnableMovement()
 	}
 }
 
-void ADynamicCamera::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
-									AActor* OtherActor, 
-									UPrimitiveComponent* OtherComp,
-									int32 OtherBodyIndex, bool bFromSweep,
-									const FHitResult& SweepResult)
+void ADynamicCamera::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	/**
 	 *	Reference to the character (can be any native or blueprint character)  
