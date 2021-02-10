@@ -31,12 +31,10 @@ void ADynamicCamera::BeginPlay()
 	Super::BeginPlay();
 	
 	/** called when the character steps on the OverlapComponent (The box) */
-	OverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &ADynamicCamera
-														 ::OnOverlapBegin);
+	OverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &ADynamicCamera::OnOverlapBegin);
 	
 	/** called when the player leaves the OverlapComponent */
-	OverlapComponent->OnComponentEndOverlap.AddDynamic(this, &ADynamicCamera
-														::OnOverlapEnd);
+	OverlapComponent->OnComponentEndOverlap.AddDynamic(this, &ADynamicCamera::OnOverlapEnd);
 }
 
 /** Used to Reset the camera back to the player after the initial SetViewTragetWithBlend */
