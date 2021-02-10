@@ -72,6 +72,7 @@ void ADynamicCamera::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 									int32 OtherBodyIndex, bool bFromSweep,
 									const FHitResult& SweepResult)
 {
+	
 	/**
 	 *	Reference to the character (can be any native or blueprint character)  
 	 *	cast it to the otherActor to call the onOverlapBegin function on.
