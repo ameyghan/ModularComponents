@@ -29,10 +29,10 @@ ADynamicCamera::ADynamicCamera()
 void ADynamicCamera::BeginPlay()
 {
 	Super::BeginPlay();
-	// called when the character steps on the OverlapComponent (The box)
+	/** called when the character steps on the OverlapComponent (The box) */
 	OverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &ADynamicCamera
 														 ::OnOverlapBegin);
-	// called when the player leaves the OverlapComponent
+	/** called when the player leaves the OverlapComponent */
 	OverlapComponent->OnComponentEndOverlap.AddDynamic(this, &ADynamicCamera
 														::OnOverlapEnd);
 }
