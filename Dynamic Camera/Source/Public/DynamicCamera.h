@@ -33,11 +33,11 @@ private:
 	UCameraComponent* Camera;
 	UPROPERTY()
 	ACharacter* EpicCharacter;
-	UPROPERTY(EditAnywhere, Category = "Timers")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Timers", meta = (AllowPrivateAccess = "true"))
 	float BlendTime;
-	UPROPERTY(EditAnywhere, Category = "Timers")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Timers", meta = (AllowPrivateAccess = "true"))
 	float CameraResetTimer;
-	UPROPERTY(EditAnywhere, Category = "Timers")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Timers", meta = (AllowPrivateAccess = "true"))
 	float MovementResetTimer;
 
 	UFUNCTION()
