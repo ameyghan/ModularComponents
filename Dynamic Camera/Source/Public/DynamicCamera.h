@@ -20,22 +20,24 @@ class HOOP_API ADynamicCamera : public AActor
 public:
 	/*constructor*/
 	ADynamicCamera();
+	
+	virtual void BeginPlay() override;
 
-protected:
+private:
 
-	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	USceneComponent* CameraRoot;
-	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	UBoxComponent* OverlapComponent;
-	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	UCameraComponent* Camera;
 	UPROPERTY()
 	ACharacter* EpicCharacter;
-	UPROPERTY(VisibleAnywhere, Category = "Timers")
+	UPROPERTY(EditAnywhere, Category = "Timers")
 	float BlendTime;
-	UPROPERTY(VisibleAnywhere, Category = "Timers")
+	UPROPERTY(EditAnywhere, Category = "Timers")
 	float CameraResetTimer;
-	UPROPERTY(VisibleAnywhere, Category = "Timers")
+	UPROPERTY(EditAnywhere, Category = "Timers")
 	float MovementResetTimer;
 
 	UFUNCTION()
@@ -53,7 +55,4 @@ protected:
 					  AActor* OtherActor, UPrimitiveComponent* OtherComp, 
 					  int32 OtherBodyIndex);
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 };
