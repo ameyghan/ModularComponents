@@ -1,10 +1,10 @@
 #include "DynamicCamera.h"
 #include "Components/BoxComponent.h"
-#include "components/SceneComponent.h"
-#include "Kismet/GameplayStatics.h"
-#include "GameFramework/PlayerController.h"
-#include "TimerManager.h"
+#include "Components/SceneComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PlayerController.h"
+#include "Kismet/GameplayStatics.h"
+#include "TimerManager.h"
 
 ADynamicCamera::ADynamicCamera()
 {
@@ -30,14 +30,14 @@ void ADynamicCamera::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	/** called when the character steps on the OverlapComponent (The box) */
+	/** Called when the character steps on the OverlapComponent (The box) */
 	OverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &ADynamicCamera::OnOverlapBegin);
 	
-	/** called when the player leaves the OverlapComponent */
+	/** Called when the player leaves the OverlapComponent */
 	OverlapComponent->OnComponentEndOverlap.AddDynamic(this, &ADynamicCamera::OnOverlapEnd);
 }
 
-/** Used to Reset the camera back to the player after the initial SetViewTragetWithBlend */
+/** Called to Reset the camera back to the player after the initial SetViewTragetWithBlend */
 void ADynamicCamera::ResetCamera()
 {
 	UE_LOG(LogTemp, Warning, TEXT("ResetCamera() called"));
@@ -77,11 +77,11 @@ void ADynamicCamera::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AA
 		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
 		{
 			/**	
-			 *	Disabling character movement and changing the camera view to wherever 
-			 *	this Actors "Camera" component is with a blend. 
-			 *	Do not use DisableInput. Using DisableINput will retain the player's 
+			 *	Disables character movement and changes the camera view to wherever 
+			 *	this Actor's "Camera" component is with a blend. 
+			 *	Do not use DisableInput. Using DisableInput will retain the player's 
 			 *	movement speed before the cut scene, so if you were running, after the cut scene
-			 *	your character will continue running and that's not common game behavior.
+			 *	your character will continue running and that's not common gameplay behavior.
 			 */
 			UCharacterMovementComponent* CharacterMovement = EpicCharacter->GetCharacterMovement();
 			if (CharacterMovement->IsWalking())
