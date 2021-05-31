@@ -2,23 +2,18 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "GameFramework/Character.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/Character.h"
+
 #include "DynamicCamera.generated.h"
 
-class UCharacterMovementComponent;
-class USceneComponent;
-class UBoxComponent;
-class UCameraComponent;
-class ACharacter;
-
 UCLASS()
-class HOOP_API ADynamicCamera : public AActor
+class /*YOUR_PROJECT_NAME_API*/ HOOP_API ADynamicCamera : public AActor
 {
 	GENERATED_BODY()
 
 public:
-	/*constructor*/
+	/*Constructor*/
 	ADynamicCamera();
 	
 	virtual void BeginPlay() override;
@@ -26,23 +21,33 @@ public:
 private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	USceneComponent* CameraRoot;
+	class USceneComponent* CameraRoot;
+	
+	// The component used to trigger the camera 
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	UBoxComponent* OverlapComponent;
+	class UBoxComponent* OverlapComponent;
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	UCameraComponent* Camera;
+	class UCameraComponent* Camera;
+
+	// The reference character that interacts with the camera to activate the OverlapComponent
 	UPROPERTY()
-	ACharacter* EpicCharacter;
+	class ACharacter* EpicCharacter;
+
+	// The amount of blend time for the camera movement
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Timers", meta = (AllowPrivateAccess = "true"))
 	float BlendTime;
+	
+	// The amount of time it takes for the delay to reset the camera back to its original position
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Timers", meta = (AllowPrivateAccess = "true"))
 	float CameraResetTimer;
+
+	// Resetting the character movement after the cut-scene-like camera movement is done
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Timers", meta = (AllowPrivateAccess = "true"))
 	float MovementResetTimer;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void ResetCamera();	
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void EnableMovement();
 
 	UFUNCTION()
