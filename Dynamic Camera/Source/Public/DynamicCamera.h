@@ -8,7 +8,7 @@
 #include "DynamicCamera.generated.h"
 
 UCLASS()
-class /*YOUR_PROJECT_NAME_API*/ HOOP_API ADynamicCamera : public AActor
+class /*YOUR_PROJECT_NAME_API*/ ADynamicCamera : public AActor
 {
 	GENERATED_BODY()
 
