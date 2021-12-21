@@ -31,7 +31,7 @@ private:
 
 	// The reference character that interacts with the camera to activate the OverlapComponent
 	UPROPERTY()
-	class ACharacter* EpicCharacter;
+	class ACharacter* YourCharacter;
 
 	// The amount of blend time for the camera movement
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Timers", meta = (AllowPrivateAccess = "true"))
