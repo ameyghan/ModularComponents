@@ -11,12 +11,12 @@ ADynamicCamera::ADynamicCamera()
 	CameraRoot = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 	RootComponent = CameraRoot;
 	
-	OverlapComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("OverlapComponent"));
-	OverlapComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	OverlapComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-	OverlapComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-	OverlapComponent->SetBoxExtent(FVector(100.f));
-	OverlapComponent->SetupAttachment(GetRootComponent());
+	TriggerPad = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerPad"));
+	TriggerPad->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	TriggerPad->SetCollisionResponseToAllChannels(ECR_Ignore);
+	TriggerPad->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	TriggerPad->SetBoxExtent(FVector(100.f));
+	TriggerPad->SetupAttachment(GetRootComponent());
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(GetRootComponent());
@@ -29,11 +29,11 @@ void ADynamicCamera::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	/** Called when the character steps on the OverlapComponent (The box) */
-	OverlapComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ADynamicCamera::OnOverlapBegin);
+	/** Called when the character steps on the TriggerPad (The box) */
+	TriggerPad->OnComponentBeginOverlap.AddUniqueDynamic(this, &ADynamicCamera::OnOverlapBegin);
 
-	/** Called when the player leaves the OverlapComponent */
-	OverlapComponent->OnComponentEndOverlap.AddUniqueDynamic(this, &ADynamicCamera::OnOverlapEnd);
+	/** Called when the player leaves the TriggerPad */
+	TriggerPad->OnComponentEndOverlap.AddUniqueDynamic(this, &ADynamicCamera::OnOverlapEnd);
 }
 
 void ADynamicCamera::BlendCameraInAndOut(ACharacter* InCharacter, UCharacterMovementComponent* InCharacterMovement)
