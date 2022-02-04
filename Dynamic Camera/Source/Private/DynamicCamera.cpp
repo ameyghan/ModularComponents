@@ -55,8 +55,8 @@ void ADynamicCamera::BlendCameraInAndOut(ACharacter* InCharacter, UCharacterMove
 				check(InCharacterMovement && PlayerController);
 				InCharacterMovement->SetMovementMode(MOVE_Walking);
 				PlayerController->SetIgnoreLookInput(false);
-			}),CameraBlendTimer, false);
-		}),CameraBlendTimer, false);
+			}), CameraBlendTimer, false);
+		}), CameraBlendTimer, false);
 	}
 }
 
