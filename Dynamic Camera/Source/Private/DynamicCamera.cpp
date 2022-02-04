@@ -1,10 +1,10 @@
 #include "DynamicCamera.h"
+
+#include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
-#include "Components/SceneComponent.h"
+#include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
-#include "TimerManager.h"
 
 ADynamicCamera::ADynamicCamera()
 {
@@ -20,10 +20,9 @@ ADynamicCamera::ADynamicCamera()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(GetRootComponent());
-
+	
 	BlendTime = 2.0f;
-	CameraResetTimer = 3.0f;
-	MovementResetTimer = 6.0f;
+	CameraBlendTimer = 3.0f;
 }
 
 void ADynamicCamera::BeginPlay()
@@ -31,84 +30,50 @@ void ADynamicCamera::BeginPlay()
 	Super::BeginPlay();
 	
 	/** Called when the character steps on the OverlapComponent (The box) */
-	OverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &ADynamicCamera::OnOverlapBegin);
-	
+	OverlapComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ADynamicCamera::OnOverlapBegin);
+
 	/** Called when the player leaves the OverlapComponent */
-	OverlapComponent->OnComponentEndOverlap.AddDynamic(this, &ADynamicCamera::OnOverlapEnd);
+	OverlapComponent->OnComponentEndOverlap.AddUniqueDynamic(this, &ADynamicCamera::OnOverlapEnd);
 }
 
-/** Called to Reset the camera back to the player after the initial SetViewTragetWithBlend */
-void ADynamicCamera::ResetCamera()
+void ADynamicCamera::BlendCameraInAndOut(ACharacter* InCharacter, UCharacterMovementComponent* InCharacterMovement)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ResetCamera() called"));
-	APlayerController* Controller = UGameplayStatics::GetPlayerController(this, 0);
-	Controller->SetViewTargetWithBlend(EpicCharacter, CameraResetTimer);
-}
-
-/** Enables movement once the blend is over and the camera is positioned where the player is */
-void ADynamicCamera::EnableMovement()
-{
-	UE_LOG(LogTemp, Warning, TEXT("EnableMovement() called"));
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
-	UCharacterMovementComponent* PlayerMovement = EpicCharacter->GetCharacterMovement();
-	PlayerMovement->SetMovementMode(MOVE_Walking);
-	PlayerMovement = Cast<UCharacterMovementComponent>(PlayerController);
-	if (PlayerController)
+	if (InCharacterMovement->IsWalking())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Cast Successful"));
-		PlayerController->SetIgnoreLookInput(false);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Cast Failed"));
+		InCharacterMovement->DisableMovement();
+		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+		check(PlayerController);
+		PlayerController->SetIgnoreLookInput(true);
+		PlayerController->SetViewTargetWithBlend(this, BlendTime);
+		FTimerHandle TimerHandle;
+		GetWorldTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([=, &TimerHandle]()
+		{
+			check(InCharacter);
+			PlayerController->SetViewTargetWithBlend(InCharacter, CameraBlendTimer);
+			GetWorldTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([=]
+			{
+				check(InCharacterMovement && PlayerController);
+				InCharacterMovement->SetMovementMode(MOVE_Walking);
+				PlayerController->SetIgnoreLookInput(false);
+			}),CameraBlendTimer, false);
+		}),CameraBlendTimer, false);
 	}
 }
 
 void ADynamicCamera::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	/**
-	 *	Reference to the character (can be any native or blueprint character)  
-	 *	cast it to the otherActor to call the onOverlapBegin function on.
-	 */
-	EpicCharacter = Cast<ACharacter>(OtherActor);
-	if (EpicCharacter)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Object Triggered through OnOverlapBegin()"));
-		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
-		{
-			/**	
-			 *	Disables character movement and changes the camera view to wherever 
-			 *	this Actor's "Camera" component is with a blend. 
-			 *	Do not use DisableInput. Using DisableInput will retain the player's 
-			 *	movement speed before the cut scene, so if you were running, after the cut scene
-			 *	your character will continue running and that's not common gameplay behavior.
-			 */
-			UCharacterMovementComponent* CharacterMovement = EpicCharacter->GetCharacterMovement();
-			if (CharacterMovement->IsWalking())
-			{	
-				CharacterMovement->DisableMovement();
-				CharacterMovement = Cast<UCharacterMovementComponent>(PlayerController);
-				if (PlayerController)
-				{
-					UE_LOG(LogTemp, Warning, TEXT("Cast Successful"));
-					PlayerController->SetIgnoreLookInput(true);
-				}
-				else
-				{
-					UE_LOG(LogTemp, Warning, TEXT("Failure"));
-				}
-			}
-			PlayerController->SetViewTargetWithBlend(this, BlendTime);
-			FTimerHandle CameraTimerHandle;
-			GetWorldTimerManager().SetTimer(CameraTimerHandle, this, &ADynamicCamera::ResetCamera, CameraResetTimer);
-			FTimerHandle MovementTimerHandle;
-			GetWorldTimerManager().SetTimer(MovementTimerHandle, this, &ADynamicCamera::EnableMovement, MovementResetTimer);
-		}
-	}
+	ACharacter* OverlappedCharacter = Cast<ACharacter>(OtherActor);
+	UCharacterMovementComponent* CharacterMovement = OverlappedCharacter->GetCharacterMovement();
+	check(OverlappedCharacter && CharacterMovement);
+	BlendCameraInAndOut(OverlappedCharacter, CharacterMovement);
 }
 
 void ADynamicCamera::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Object Destroyed through OnOverlapEnd()"));
 	Destroy();
 }
+
+
+
+
+
