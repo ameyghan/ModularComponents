@@ -28,14 +28,11 @@ private:
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	
-	/** Components */
-	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	class USceneComponent* CameraRoot;
 	// The component used to trigger the camera 
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	class UBoxComponent* TriggerBox;
+	TObjectPtr<class UBoxComponent> OverlapComponent;
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	class UCameraComponent* Camera;
+	TObjectPtr<class UCameraComponent> Camera;
 	
 	// The amount of blend time for the camera movement
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Timers", meta = (AllowPrivateAccess = "true"))
