@@ -8,7 +8,7 @@ class UCharacterMovementComponent;
 class APlayerController;
 
 UCLASS()
-class /*YOURGAME_API*/ ABOTDynamicCamera : public AActor
+class /*YOURGAME_API*/ ADynamicCamera : public AActor
 {
 	GENERATED_BODY()
 	
