@@ -30,7 +30,7 @@ private:
 	
 	/** Components */
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	class USceneComponent* CameraRoot;
+	USceneComponent* CameraRoot;
 	// The component used to trigger the camera 
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	class UBoxComponent* TriggerBox;
