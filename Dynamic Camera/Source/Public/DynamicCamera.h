@@ -33,7 +33,7 @@ private:
 	class USceneComponent* CameraRoot;
 	// The component used to trigger the camera 
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	class UBoxComponent* OverlapComponent;
+	class UBoxComponent* TriggerPad;
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	class UCameraComponent* Camera;
 	
