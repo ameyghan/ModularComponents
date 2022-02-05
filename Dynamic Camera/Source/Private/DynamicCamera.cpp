@@ -46,7 +46,11 @@ void ADynamicCamera::BlendCameraInAndOut(ACharacter* InCharacter, UCharacterMove
 		PlayerController->SetIgnoreLookInput(true);
 		PlayerController->SetViewTargetWithBlend(this, BlendTime);
 		FTimerHandle TimerHandle;
-		GetWorldTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([=, &TimerHandle]()
+		/** The first lambda (which is for when the player steps on the TriggerBox) 
+		 *	can capture the timerhandle by reference to pass it to the second lambda delegate.
+		 *	All other values have to be captured by value otherwise you will get a nullptr crash.
+		 */
+		GetWorldTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([=, &TimerHandle]
 		{
 			check(InCharacter);
 			PlayerController->SetViewTargetWithBlend(InCharacter, CameraBlendTimer);
